@@ -65,7 +65,6 @@ class WhatsAppAgentTransfer(Document):
             "transferred_at": now_datetime()
         })
         doc.insert(ignore_permissions=True)
-        frappe.db.commit()
 
         return doc
 
@@ -97,5 +96,4 @@ class WhatsAppAgentTransfer(Document):
             doc.status = "Resumed"
             doc.save(ignore_permissions=True)
 
-        frappe.db.commit()
         return True

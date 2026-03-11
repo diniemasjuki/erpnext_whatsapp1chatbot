@@ -81,7 +81,7 @@ class FlowEngine:
                 "last_activity": datetime.now()
             })
             session.insert(ignore_permissions=True)
-            frappe.db.commit()
+
 
             # Build and return initial message
             if flow.initial_message_type == "Template" and flow.initial_template:
@@ -123,7 +123,7 @@ class FlowEngine:
                     session.status = "Cancelled"
                     session.completed_at = datetime.now()
                     session.save(ignore_permissions=True)
-                    frappe.db.commit()
+        
                     return "Your request has been cancelled."
 
             # Find current step
@@ -149,14 +149,14 @@ class FlowEngine:
 
                     if current_step.retry_on_invalid and session.step_retries < max_retries:
                         session.save(ignore_permissions=True)
-                        frappe.db.commit()
+            
                         return error or current_step.validation_error or "Invalid input. Please try again."
                     else:
                         # Max retries reached, cancel flow
                         session.status = "Cancelled"
                         session.completed_at = datetime.now()
                         session.save(ignore_permissions=True)
-                        frappe.db.commit()
+            
                         return "Too many invalid attempts. Please start again."
 
                 # Store input
@@ -174,7 +174,7 @@ class FlowEngine:
             if not next_step_name:
                 # No next step, complete flow
                 session.save(ignore_permissions=True)
-                frappe.db.commit()
+    
                 return self.complete_flow(session, flow)
 
             # Find next step
@@ -206,7 +206,7 @@ class FlowEngine:
             session.step_retries = 0
             session.last_activity = datetime.now()
             session.save(ignore_permissions=True)
-            frappe.db.commit()
+
 
             # Build and return next step message
             response = self.build_step_message(next_step, session)
@@ -215,7 +215,7 @@ class FlowEngine:
             if isinstance(response, str):
                 session.add_message("Outgoing", response, next_step.step_name)
             session.save(ignore_permissions=True)
-            frappe.db.commit()
+
 
             return response
 
@@ -404,7 +404,7 @@ class FlowEngine:
             elif flow.on_complete_action == "Run Script":
                 self.run_script(flow.custom_script, session_data)
 
-            frappe.db.commit()
+
 
             # Build completion message with variable substitution
             completion_msg = flow.completion_message or "Thank you! Your request has been submitted."
@@ -458,7 +458,7 @@ class FlowEngine:
 
             doc = frappe.get_doc(doc_data)
             doc.insert(ignore_permissions=True)
-            frappe.db.commit()
+
 
             frappe.log_error(
                 f"create_document: Successfully created {flow.create_doctype} with data: {doc_data}",

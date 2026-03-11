@@ -206,7 +206,6 @@ class ChatbotProcessor:
                 })
                 msg.flags.ignore_chatbot = True
                 msg.insert(ignore_permissions=True)
-                frappe.db.commit()
 
             elif isinstance(response, dict):
                 # Complex response (template, media, buttons, etc.)
@@ -221,7 +220,6 @@ class ChatbotProcessor:
                 msg = frappe.get_doc(msg_data)
                 msg.flags.ignore_chatbot = True
                 msg.insert(ignore_permissions=True)
-                frappe.db.commit()
 
         except Exception as e:
             frappe.log_error(

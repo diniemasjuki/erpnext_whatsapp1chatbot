@@ -71,9 +71,6 @@ class SessionManager:
                     if flow.timeout_message:
                         self.send_timeout_message(session, flow.timeout_message)
 
-            if expired:
-                frappe.db.commit()
-
         except Exception as e:
             frappe.log_error(f"SessionManager expire_old_sessions error: {str(e)}")
 
@@ -173,9 +170,6 @@ def cleanup_expired_sessions():
                 frappe.log_error(
                     f"cleanup_expired_sessions error for {session_data.name}: {str(e)}"
                 )
-
-        if expired_sessions:
-            frappe.db.commit()
 
     except Exception as e:
         frappe.log_error(f"cleanup_expired_sessions error: {str(e)}")
